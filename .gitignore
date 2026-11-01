@@ -147,3 +147,13 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Aegora local and release artifacts
+outputs/
+work/
+app.asar
+*.asar
+*.pfx
+*.p12
+*.pem
+*.key

@@ -1,0 +1,79 @@
+{
+  "name": "aegora",
+  "productName": "Aegora",
+  "version": "0.13.0",
+  "description": "Aegora — a minimal, glassy desktop browser built on Chromium",
+  "main": "main.js",
+  "author": "Aegora",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "build:installer": "node scripts/release.cjs",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "app.aegora.browser",
+    "productName": "Aegora",
+    "generateUpdatesFilesForAllChannels": true,
+    "publish": [{
+      "provider": "github",
+      "owner": "noximouss",
+      "repo": "Aegora",
+      "releaseType": "release"
+    }],
+    "copyright": "Copyright © 2026 Aegora",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "build/icon.png",
+      "build/icon.ico",
+      "FILTER-LISTS.md",
+      "LICENSE",
+      "THIRD-PARTY-NOTICES.md",
+      "licenses/GPL-3.0.txt",
+      "build/shield-engine*.bin",
+      "build/shield-engine.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": "dmg"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": "nsis-web",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsisWeb": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerLanguages": ["en_US", "ru_RU"],
+      "language": "1033",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/installerSidebar.bmp"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Network"
+    }
+  },
+  "dependencies": {
+    "@ghostery/adblocker-electron": "^2.20.1",
+    "electron-updater": "^6.6.2"
+  }
+}

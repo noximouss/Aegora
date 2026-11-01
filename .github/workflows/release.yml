@@ -1,0 +1,47 @@
+name: Build and publish Aegora
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows-web-installer:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Confirm release tag matches app version
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          if ($env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match package.json version $version"
+          }
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Select the alpha update channel
+        if: contains(github.ref_name, '-alpha.')
+        shell: pwsh
+        run: |
+          $package = Get-Content package.json -Raw | ConvertFrom-Json
+          $package.build.publish[0] | Add-Member -NotePropertyName channel -NotePropertyValue alpha -Force
+          $package | ConvertTo-Json -Depth 100 | Set-Content package.json -Encoding utf8
+
+      - name: Build and publish the Windows web installer
+        run: npm run build:installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EP_PRE_RELEASE: ${{ contains(github.ref_name, '-') }}
